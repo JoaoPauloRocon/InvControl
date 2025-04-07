@@ -21,6 +21,12 @@ module.exports = (sequelize, DataTypes) => {
         beforeCreate: async (usuario) => {
           const salt = await require('bcrypt').genSalt(10);
           usuario.senha = await require('bcrypt').hash(usuario.senha, salt);
+        },
+        beforeUpdate: async (usuario) => {
+          if (usuario.changed('senha')) {
+            const salt = await require('bcrypt').genSalt(10);
+            usuario.senha = await require('bcrypt').hash(usuario.senha, salt);
+          }
         }
       }
     });
