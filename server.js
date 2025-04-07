@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+const produtoRoutes = require('./src/routes/produtoRoutes');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +15,9 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('🚀 InvControl API rodando com sucesso!');
 });
+
+// Rotas de Produto
+app.use('/produtos', produtoRoutes);
 
 // Inicia o servidor
 app.listen(PORT, () => {
