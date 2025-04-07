@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const produtoRoutes = require('./src/routes/produtoRoutes');
+const movimentacaoRoutes = require('./src/routes/movimentacaoRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 
 // Rotas de Produto
 app.use('/produtos', produtoRoutes);
+app.use(movimentacaoRoutes);
 
 // Inicia o servidor
 app.listen(PORT, () => {
