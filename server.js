@@ -4,6 +4,9 @@ require('dotenv').config();
 
 const produtoRoutes = require('./src/routes/produtoRoutes');
 const movimentacaoRoutes = require('./src/routes/movimentacaoRoutes');
+const relatorioRoutes = require('./src/routes/relatorioRoutes');
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +23,7 @@ app.get('/', (req, res) => {
 // Rotas de Produto
 app.use('/produtos', produtoRoutes);
 app.use(movimentacaoRoutes);
+app.use(relatorioRoutes);
 
 // Inicia o servidor
 app.listen(PORT, () => {
