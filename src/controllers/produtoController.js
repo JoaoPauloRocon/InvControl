@@ -1,4 +1,4 @@
-const Produto = require('../models/Produto');
+const { Produto } = require('../models');
 
 // Listar todos os produtos
 const listarProdutos = async (req, res) => {
@@ -20,6 +20,19 @@ const criarProduto = async (req, res) => {
     res.status(400).json({ erro: 'Erro ao criar produto', detalhe: error.message });
   }
 };
+
+const buscarPorId = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const produto = await Produto.findByPk(id);
+      if (!produto) {
+        return res.status(404).json({ erro: 'Produto não encontrado' });
+      }
+      res.json(produto);
+    } catch (error) {
+      res.status(500).json({ erro: 'Erro ao buscar produto', detalhe: error.message });
+    }
+  };
 
 // Atualizar um produto existente
 const atualizarProduto = async (req, res) => {
@@ -59,6 +72,7 @@ const deletarProduto = async (req, res) => {
 module.exports = {
   listarProdutos,
   criarProduto,
+  buscarPorId,
   atualizarProduto,
   deletarProduto
 };
