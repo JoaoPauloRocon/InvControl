@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const relatorioController = require('../controllers/relatorioController');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.get('/relatorio-movimentacoes', relatorioController.gerarRelatorio);
+// Rota protegida
+router.get('/relatorio-movimentacoes', authMiddleware, relatorioController.gerarRelatorio);
 
 module.exports = router;
