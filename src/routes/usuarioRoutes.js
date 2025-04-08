@@ -9,6 +9,7 @@ router.post('/auth/login', usuarioController.login);
 
 // Rotas protegidas (exigem token)
 router.get('/usuarios', authMiddleware, usuarioController.listar);
+router.get('/usuarios/me', authMiddleware, usuarioController.buscarMe);
 router.get('/usuarios/:id', authMiddleware, usuarioController.buscarPorId);
 router.put('/usuarios/:id', authMiddleware, usuarioController.atualizar);
 router.delete('/usuarios/:id', authMiddleware, usuarioController.deletar);
