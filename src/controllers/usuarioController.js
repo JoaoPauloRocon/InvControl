@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Usuario = require('../models').Usuario;
 const segredo = process.env.JWT_SECRET;
+const { tokenStore } = require('./authController');
+
+
 
 module.exports = {
     async registrar(req, res) {
@@ -29,22 +32,36 @@ module.exports = {
                 return res.status(401).json({ erro: 'Senha incorreta' });
             }
 
-            // Corrigido aqui: usando isAdmin no payload do token
-            const token = jwt.sign(
-                {
-                    id: usuario.id,
-                    email: usuario.email,
-                    isAdmin: usuario.isAdmin
-                },
+            // Gerar access token (15 minutos)
+            const accessToken = jwt.sign(
+                { id: usuario.id, email: usuario.email, admin: usuario.admin },
                 segredo,
-                { expiresIn: '1d' }
+                { expiresIn: '15m' }
             );
 
-            res.json({ mensagem: 'Login bem-sucedido', token });
+            // Gerar refresh token (7 dias)
+            const refreshToken = jwt.sign(
+                { id: usuario.id },
+                segredo,
+                { expiresIn: '7d' }
+            );
+
+            tokenStore.salvar(usuario.id, refreshToken);
+
+            // Você pode armazenar o refresh token em memória ou em banco, se quiser
+
+            res.json({
+                mensagem: 'Login bem-sucedido',
+                accessToken,
+                refreshToken
+            });
+
         } catch (erro) {
             res.status(500).json({ erro: 'Erro ao fazer login', detalhe: erro.message });
         }
+
     },
+
 
     async listar(req, res) {
         try {
