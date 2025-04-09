@@ -4,7 +4,7 @@ const { Produto } = require('../models');
 const listarProdutos = async (req, res) => {
   try {
     let produtos;
-    if (req.usuario.admin) {
+    if (req.usuario.isAdmin) {
       produtos = await Produto.findAll(); // Admin vê todos
     } else {
       produtos = await Produto.findAll({
@@ -26,7 +26,7 @@ const criarProduto = async (req, res) => {
       descricao,
       preco,
       quantidade,
-      usuario_id: req.usuario.id // forçando a associação com o usuário logado
+      usuario_id: req.usuario.id
     });
     res.status(201).json(novoProduto);
   } catch (error) {
@@ -44,7 +44,7 @@ const buscarPorId = async (req, res) => {
       return res.status(404).json({ erro: 'Produto não encontrado' });
     }
 
-    if (!req.usuario.admin && produto.usuario_id !== req.usuario.id) {
+    if (!req.usuario.isAdmin && produto.usuario_id !== req.usuario.id) {
       return res.status(403).json({ erro: 'Acesso negado' });
     }
 
@@ -65,7 +65,7 @@ const atualizarProduto = async (req, res) => {
       return res.status(404).json({ erro: 'Produto não encontrado' });
     }
 
-    if (!req.usuario.admin && produto.usuario_id !== req.usuario.id) {
+    if (!req.usuario.isAdmin && produto.usuario_id !== req.usuario.id) {
       return res.status(403).json({ erro: 'Acesso negado' });
     }
 
@@ -86,7 +86,7 @@ const deletarProduto = async (req, res) => {
       return res.status(404).json({ erro: 'Produto não encontrado' });
     }
 
-    if (!req.usuario.admin && produto.usuario_id !== req.usuario.id) {
+    if (!req.usuario.isAdmin && produto.usuario_id !== req.usuario.id) {
       return res.status(403).json({ erro: 'Acesso negado' });
     }
 

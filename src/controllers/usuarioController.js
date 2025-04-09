@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Usuario = require('../models').Usuario;
 const segredo = process.env.JWT_SECRET;
-// ideal usar process.env.JWT_SECRET depois
 
 module.exports = {
     async registrar(req, res) {
@@ -30,8 +29,16 @@ module.exports = {
                 return res.status(401).json({ erro: 'Senha incorreta' });
             }
 
-            const token = jwt.sign({ id: usuario.id, email: usuario.email, admin: usuario.admin }, segredo, { expiresIn: '1d' });
-
+            // Corrigido aqui: usando isAdmin no payload do token
+            const token = jwt.sign(
+                {
+                    id: usuario.id,
+                    email: usuario.email,
+                    isAdmin: usuario.isAdmin
+                },
+                segredo,
+                { expiresIn: '1d' }
+            );
 
             res.json({ mensagem: 'Login bem-sucedido', token });
         } catch (erro) {
@@ -56,9 +63,8 @@ module.exports = {
         try {
             const idSolicitado = parseInt(req.params.id);
             const idLogado = req.usuario.id;
-            const isAdmin = req.usuario.admin;
+            const isAdmin = req.usuario.isAdmin;
 
-            // Só permite se for admin ou o próprio usuário
             if (!isAdmin && idSolicitado !== idLogado) {
                 return res.status(403).json({ erro: 'Acesso negado' });
             }
