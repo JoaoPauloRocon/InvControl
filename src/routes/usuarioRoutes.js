@@ -4,6 +4,7 @@ const { body, param } = require('express-validator');
 const usuarioController = require('../controllers/usuarioController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const validarCampos = require('../middlewares/validacaoMiddleware');
+const { limiterLogin, limiterRegistro } = require('../middlewares/rateLimit');
 
 // Validações
 const validarRegistro = [
@@ -26,8 +27,8 @@ const validarId = [
 ];
 
 // Rotas públicas
-router.post('/auth/registrar', validarRegistro, usuarioController.registrar);
-router.post('/auth/login', usuarioController.login);
+router.post('/auth/registrar', limiterRegistro, validarRegistro, usuarioController.registrar);
+router.post('/auth/login',limiterLogin, usuarioController.login);
 
 // Rotas protegidas
 router.get('/usuarios', authMiddleware, usuarioController.listar);
